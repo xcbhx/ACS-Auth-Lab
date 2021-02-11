@@ -49,7 +49,7 @@ from .models import User
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(user_id)
 ```
 
 This tells the login manager how to load a user with a particular id. We're using Flask-SQLAlchemy for this project, but technically, you could use any other database, or even make up your own `User` object!
@@ -61,6 +61,17 @@ bcrypt = Bcrypt(app)
 ```
 
 _Side note: All of the required imports should already be present in the project, but it's still a good idea to run your code as you go along, to make sure you catch any missing imports or syntax errors!_
+
+### Models
+
+In `books_app/models.py`, **update the `User` model so that it inherits from `flask_login.UserMixin`**:
+
+```py
+class User(UserMixin, db.Model):
+    # ... fields go here
+```
+
+This will super-charge our `User` model with all of the functionality it needs to support authentication! To read more about what functionality the `UserMixin` provides, read the documentation [here](https://flask-login.readthedocs.io/en/latest/#your-user-class).
 
 ### Forms
 
