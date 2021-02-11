@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 
 # TODO: Add authentication setup code here!
 
-
+bcrypt = None # remove me! (needed so that server will run)
 
 ###########################
 # Blueprints

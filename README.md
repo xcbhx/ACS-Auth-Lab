@@ -28,7 +28,7 @@ Then you can run the following to run the Flask server:
 python3 app.py
 ```
 
-## Instructions
+## Part 1: Tutorial Instructions
 
 ### Setup Code
 
@@ -221,6 +221,16 @@ def logout():
     return redirect(url_for('main.homepage'))
 ```
 
+Finally, let's add some code to the `base.html` file so that the user can see that they are logged in.
+
+**Modify the `books_app/templates/base.html` file** to add the following just above the `{% block content %}{% endblock %}`:
+
+```html
+{% if current_user.is_authenticated %}
+<p>You are logged in as {{ current_user.username }}</p>
+{% endif %}
+```
+
 Now, try out your routes. What happens when you log in? Is anything different?
 
 ### Checking the `current_user` Object
@@ -255,13 +265,13 @@ def create_book():
 
 **In `books_app/main/routes.py`, add `@login_required`** to the routes for Create Book, Create Author, and Create Genre.
 
-## Challenge
+## Part 2: Challenge
 
 By now, hopefully you've gotten the hang of using Flask-Login! Let's test your knowledge by completing the `favorite_book` and `unfavorite_book` routes.
 
 First, navigate to `book_detail.html` and complete the TODOs to appropriately display either the "Favorite Book" form or "Unfavorite Book" form to logged-in users.
 
-Then, navigate to `main/routes.py` and complete the TODOs in the `favorite_book` and `unfavorite_book` routes. (No need to complete the other routes.)
+Then, navigate to `main/routes.py` and complete the TODOs in the `favorite_book` and `unfavorite_book` routes. (No need to complete the other routes.) Make sure to add `@login_required` to these routes, so that only logged-in users can favorite a book.
 
 Make sure to test your work!!
 
