@@ -4,6 +4,7 @@ from sqlalchemy.orm import backref
 from flask_login import UserMixin
 import enum
 
+
 class FormEnum(enum.Enum):
     """Helper class to make it easier to use enums with forms."""
     @classmethod
@@ -13,11 +14,13 @@ class FormEnum(enum.Enum):
     def __str__(self):
         return str(self.value)
 
+
 class Audience(FormEnum):
     CHILDREN = 'Children'
     YOUNG_ADULT = 'Young Adult'
     ADULT = 'Adult'
     ALL = 'All'
+
 
 class Book(db.Model):
     """Book model."""
@@ -46,6 +49,7 @@ class Book(db.Model):
     def __repr__(self):
         return f'<Book: {self.title}>'
 
+
 class Author(db.Model):
     """Author model."""
     id = db.Column(db.Integer, primary_key=True)
@@ -58,6 +62,7 @@ class Author(db.Model):
 
     def __repr__(self):
         return f'<Author: {self.name}>'
+
 
 class Genre(db.Model):
     """Genre model."""
@@ -72,10 +77,12 @@ class Genre(db.Model):
     def __repr__(self):
         return f'<Genre: {self.name}>'
 
+
 book_genre_table = db.Table('book_genre',
     db.Column('book_id', db.Integer, db.ForeignKey('book.id')),
     db.Column('genre_id', db.Integer, db.ForeignKey('genre.id'))
 )
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -83,6 +90,10 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     favorite_books = db.relationship(
         'Book', secondary='user_book', back_populates='users_who_favorited')
+
+    def __repr__(self):
+        return f'<User: {self.username}>'
+
 
 favorite_books_table = db.Table('user_book',
     db.Column('book_id', db.Integer, db.ForeignKey('book.id')),
