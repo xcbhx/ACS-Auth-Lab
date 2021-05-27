@@ -104,9 +104,22 @@ class LoginForm(FlaskForm):
         validators=[DataRequired(), Length(min=3, max=50)])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if not user:
+            raise ValidationError('No user with that username. Please try again.')
+
+    def validate_password(self, password):
+        user = User.query.filter_by(username=self.username.data).first()
+        if user and not bcrypt.check_password_hash(
+                user.password, password.data):
+            raise ValidationError('Password doesn\'t match. Please try again.')
 ```
 
-This form has the same fields as the signup form, but this time we don't need the validator.
+This form has the same fields as the signup form. This time, we actually need _two_ validators: The first is `validate_username`, which throws an error if the user _doesn't_ exist in the database. This makes sense - you can't log in as a user that doesn't exist yet!
+
+The second validator is how we check that the user's password matches what is listed in the database. Here, we are checking that the user's password matches the password hash we stored in the database. Because we're storing a hash, and not the real password, we need to use the bcrypt `check_password_hash` function to decode it. If the passwords match, then `check_password_hash` returns `True`.
 
 ### The Sign Up Route
 
@@ -181,14 +194,13 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            login_user(user, remember=True)
-            next_page = request.args.get('next')
-            return redirect(next_page if next_page else url_for('main.homepage'))
+        login_user(user, remember=True)
+        next_page = request.args.get('next')
+        return redirect(next_page if next_page else url_for('main.homepage'))
     return render_template('login.html', form=form)
 ```
 
-Here, we are checking that the user's password matches the password hash we stored in the database. Because we're storing a hash, and not the real password, we need to use the bcrypt `check_password_hash` function to decode it. If the passwords match, then we return `True`.
+Because we did all of the heavy lifting of checking usernames & passwords in the form, here we can work based off of the assumption that the user's password matched and that the user exists in the database. Cool!
 
 Note that here, we're using a `next_page` variable to determine where to send the user to. This is because we may have routes in the future that require the user to be logged in. If the user tries to visit a page while logged out, they will be redirected to the login page. Using the `next` query parameter allows us to send the user back where they wanted to go once they are logged in.
 
