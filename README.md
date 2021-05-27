@@ -32,7 +32,7 @@ python3 app.py
 
 ### Setup Code
 
-In `books_app/__init.py__`, add the following code under the "Authentication" header:
+In `books_app/extensions.py`, add the following code under the "Authentication" header:
 
 ```py
 login_manager = LoginManager()
