@@ -121,6 +121,12 @@ This form has the same fields as the signup form. This time, we actually need _t
 
 The second validator is how we check that the user's password matches what is listed in the database. Here, we are checking that the user's password matches the password hash we stored in the database. Because we're storing a hash, and not the real password, we need to use the bcrypt `check_password_hash` function to decode it. If the passwords match, then `check_password_hash` returns `True`.
 
+Since this function uses `bcrypt` you need to import it at the of your file (forms.py)! 
+
+```python
+from books_app.extensions import app, db, bcrypt
+```
+
 ### The Sign Up Route
 
 In `books_app/auth/routes.py`, let's fill out the sign up route:
