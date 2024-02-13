@@ -27,7 +27,7 @@ mv .env.example .env
 Then you can run the following to run the Flask server:
 
 ```
-python3 app.py
+python app.py
 ```
 
 ## Part 1: Tutorial Instructions
