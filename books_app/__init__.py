@@ -1,21 +1,27 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
-
-# Create db instance (this is what your models.py is trying to import)
-db = SQLAlchemy()
-login_manager = LoginManager()
+from books_app.extensions import db, login_manager, bcrypt
+from books_app.config import Config
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'your-secret-key'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your-database.db'
+    app.config.from_object(Config)
 
+    # Initialize extensions
     db.init_app(app)
     login_manager.init_app(app)
+    bcrypt.init_app(app)
 
-    # Import and register your blueprints/routes here
+    login_manager.login_view = 'auth.login'
+
+    from books_app.models import User
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))  # careful to wrap user_id as int
+
+    # Import and register blueprints
     from books_app.main.routes import main
+    from books_app.auth.routes import auth  # if you have an auth blueprint
     app.register_blueprint(main)
+    app.register_blueprint(auth)
 
     return app

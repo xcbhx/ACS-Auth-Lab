@@ -6,7 +6,7 @@ from books_app.models import Book, Author, Genre, User
 from books_app.main.forms import BookForm, AuthorForm, GenreForm
 
 # Import app and db from events_app package so that we can run app
-from books_app.extensions import app, bcrypt, db
+from books_app.extensions import bcrypt, db
 
 main = Blueprint("main", __name__)
 
@@ -18,7 +18,7 @@ main = Blueprint("main", __name__)
 def homepage():
     all_books = Book.query.all()
     all_users = User.query.all()
-    return render_template('home.html', 
+    return render_template('main/home.html', 
         all_books=all_books, all_users=all_users)
 
 

@@ -5,7 +5,7 @@ from books_app.models import Book, Author, Genre, User
 from books_app.auth.forms import SignUpForm, LoginForm
 
 # Import app and db from events_app package so that we can run app
-from books_app.extensions import app, db, bcrypt
+from books_app.extensions import db, bcrypt
 
 auth = Blueprint("auth", __name__)
 
@@ -26,10 +26,15 @@ def signup():
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    # TODO: Fill out this route!
-    pass
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        login_user(user, remember=True)
+        next_page = request.args.get('next')
+        return redirect(next_page if next_page else url_for('main.homepage'))
+    return render_template('login.html', form=form)
 
 @auth.route('/logout')
 def logout():
-    # TODO: Fill out this route!
-    pass
+    logout_user()
+    return redirect(url_for('main.homepage'))
