@@ -1,9 +1,6 @@
-from books_app.extensions import app, db
-from books_app.main.routes import main
-from books_app.auth.routes import auth
+from books_app import create_app, db
 
-app.register_blueprint(main)
-app.register_blueprint(auth)
+app = create_app()
 
 with app.app_context():
     db.create_all()

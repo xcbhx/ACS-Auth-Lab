@@ -14,7 +14,6 @@ def signup():
     # TODO: Fill out this route!
     pass
 
-
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     # TODO: Fill out this route!
